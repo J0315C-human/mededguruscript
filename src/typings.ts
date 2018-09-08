@@ -12,3 +12,59 @@ export interface FilterTree<T> {
   filter: ((item: T) => boolean) | (() => boolean);
   children?: FilterTree<T>[];
 }
+
+export interface RCResponse {
+  offset?: string;
+  records: any[];
+}
+
+export interface Resource {
+  createdTime: string;
+  fields: ResourceFields;
+  id: string;
+}
+
+export type ResourceLanguage = 'English' | 'Spanish' | 'Portuguese';
+export type ResourceLearnerLevel = 'Resident' | 'Attending Physician' | 'NP/PA'; //////
+
+export interface ResourceLogoThumb {
+  height: number;
+  width: number;
+  url: string;
+}
+
+export interface ResourceLogo {
+  filename: string;
+  id: string;
+  size: number;
+  thumbnails: {
+    full: ResourceLogoThumb;
+    large: ResourceLogoThumb;
+    small: ResourceLogoThumb;
+  };
+  type: string;
+  url: string;
+
+}
+
+export type ResourceUserType = 'Learners' | 'Educators' | 'Both';
+
+export interface ResourceFields {
+  Approved: boolean;
+  Author?: string;
+  Language: ResourceLanguage[];
+  Logo: ResourceLogo[];
+  Source: string;
+  'Date published'?: string;
+  'ABEM Model Subcategory'?: string[];
+  'Non-Clinical Subcategory'?: string[];
+  'Additional Keywords'?: string[];
+  'Learner Level'?: ResourceLearnerLevel[];
+  'Other Topics'?: string[];
+  'Ready for Import to Webflow CMS'?: boolean;
+  'Pediatric Related'?: boolean;
+  'Resource Title': string;
+  'Resource Type': string[]; /////////
+  'Resource URL': string;
+  'User type': ResourceUserType;
+}
