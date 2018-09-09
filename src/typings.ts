@@ -13,6 +13,13 @@ export interface FilterTree<T> {
   children?: FilterTree<T>[];
 }
 
+export interface FilterFunctionCollection<T> {
+  [key: string]: (selection: string[]) => (data: T[]) => T[];
+}
+export interface FilterFunctionSelections {
+  [key: string]: string[];
+}
+
 export interface RCResponse {
   offset?: string;
   records: any[];
@@ -25,7 +32,7 @@ export interface Resource {
 }
 
 export type ResourceLanguage = 'English' | 'Spanish' | 'Portuguese';
-export type ResourceLearnerLevel = 'Resident' | 'Attending Physician' | 'NP/PA'; //////
+export type ResourceLearnerLevel = 'Resident' | 'Attending Physician' | 'NP/PA' | string; //////
 
 export interface ResourceLogoThumb {
   height: number;
@@ -66,5 +73,5 @@ export interface ResourceFields {
   'Resource Title': string;
   'Resource Type': string[]; /////////
   'Resource URL': string;
-  'User type': ResourceUserType;
+  'User type'?: ResourceUserType;
 }

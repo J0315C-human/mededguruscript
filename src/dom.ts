@@ -1,16 +1,17 @@
-import { DataEntity, FilterTree } from './typings';
-import { filterDataByTreePath } from './filters';
+import { Resource, FilterTree, FilterFunctionSelections } from './typings';
+import { filterByOptionsAndTreePath } from './filters';
+import { filterCollection } from './siteFilters';
 
-export const displayData = (data: DataEntity[]) => {
+export const displayData = (data: Resource[]) => {
   const results = document.getElementById('results') as HTMLElement;
   if (!results) return;
   results.innerHTML = data.map(d => {
-    const inner = `-${d.name}. by ${d.authors.join(', ')}, sub:${d.subject}, lang:${d.language}${d.isGood ? ' -GOOD' : ''}`;
+    const inner = `-${d.fields["Resource Title"]}, topic:${(d.fields["ABEM Model Subcategory"] || []).join('/')}, lang:${d.fields.Language.join('/')}, User: ${d.fields["User type"]}`;
     return `<div>${inner}</div>`;
   }).join('<br/>');
 }
 
-const createFilterButtonsInner = (branch: FilterTree<DataEntity>, fullTree: FilterTree<DataEntity>, testData: any, depth: number, path: string[]) => {
+const createFilterButtonsInner = (branch: FilterTree<Resource>, fullTree: FilterTree<Resource>, testData: any, depth: number, path: string[], selections: FilterFunctionSelections) => {
   const el = document.getElementById('filters') as HTMLElement;
   const filter = document.createElement("div");
   filter.textContent = '. . '.repeat(depth) + branch.name;
@@ -18,17 +19,17 @@ const createFilterButtonsInner = (branch: FilterTree<DataEntity>, fullTree: Filt
   const thisPath = path.concat(branch.name);
 
   filter.onclick = () => {
-    const filtered = filterDataByTreePath(testData, fullTree, thisPath);
+    const filtered = filterByOptionsAndTreePath(testData, fullTree, thisPath, filterCollection, selections)
     displayData(filtered);
   }
   el.appendChild(filter);
 
   if (!branch.children) return;
   branch.children.forEach(child => {
-    createFilterButtonsInner(child, fullTree, testData, depth + 1, thisPath);
+    createFilterButtonsInner(child, fullTree, testData, depth + 1, thisPath, selections);
   });
 }
 
-export const createFilterButtons = (testData: DataEntity[], filterTree: FilterTree<any>) => {
-  createFilterButtonsInner(filterTree, filterTree, testData, 0, []);
+export const createFilterButtons = (testData: Resource[], filterTree: FilterTree<any>, selections: FilterFunctionSelections) => {
+  createFilterButtonsInner(filterTree, filterTree, testData, 0, [], selections);
 }
