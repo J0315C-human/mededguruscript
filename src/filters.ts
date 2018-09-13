@@ -18,7 +18,6 @@ export function filterDataByFilterOptions<T>(data: T[], filters: FilterFunctionC
   for (let filterName in selections) {
     if (filters[filterName] !== undefined) {
       filtered = filters[filterName](selections[filterName])(filtered);
-      console.log('filtered by ' + selections[filterName], filtered)
     } else {
       console.log('no filter function for ' + filterName)
     }
