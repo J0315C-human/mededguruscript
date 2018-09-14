@@ -3,7 +3,9 @@ import { FilterFunctionSelections, Resource } from "typings";
 const glob = {
   filtersCreated: false,
   selections: {
-    filterByUserType: ['Learners']
+    filterByUserType: ['any'],
+    filterByContentType: ['any'],
+    filterByLanguage: ['any'],
   } as FilterFunctionSelections,
   filterPath: [],
   resources: [] as Resource[],

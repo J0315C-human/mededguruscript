@@ -6,6 +6,9 @@
   <script src="//cdn.polyfill.io/v2/polyfill.min.js"></script>
   <title>Frontend Boilerplate with React and TypeScript</title>
   <style>
+    body {
+      font-size: 22px;
+    }
     .filterPath {
       font-size: 22px;
       line-height: 25px;
@@ -15,14 +18,72 @@
       cursor: pointer;
       font-size: 24px;
     }
+
+    .options {
+      display: block;
+    }
+    .optionsPart {
+      display: flex;
+      flex-flow: row;
+    }
+
+    select {
+      width: 200px;
+      font-size: 20px;
+      height: 25px;
+      line-height: 25px;
+      margin: 5px;
+    }
+    .columns {
+      display: flex;
+      width: 100%;
+      flex-flow: row nowrap;
+    }
   </style>
 </head>
 
 <body>
-  <div id="root"></div>
-  <div id="filters" style="border: 10px solid #EEE; margin-bottom: 30px;">
+  <div class="columns">
+    <div>
+      <div id="root" class="options" style="width: 550px;">
+        <div id="options" style="border: 10px solid #EEE; margin: 30px;">
+          <div class="optionsPart"><label>Content Type: </label>
+            <select id="optionContentType">
+              <option value="any">Any</option>
+              <option value="Blog Post">Blog Post</option>
+              <option value="Podcast">Podcast</option>
+              <option value="Textbook Review">Textbook Review</option>
+              <option value="Workshop">Workshop</option>
+            </select>
+          </div>
+          <div class="optionsPart"><label>Language: </label>
+            <select id="optionLanguage">
+              <option value="any">Any</option>
+              <option value="English">English</option>
+              <option value="Spanish">Spanish</option>
+            </select>
+          </div>
+          <div class="optionsPart"><label>User Type: </label>
+            <select id="optionUserType">
+              <option value="any">Any</option>
+              <option value="Learners">Learners</option>
+              <option value="Educators">Educators</option>
+            </select>
+          </div>
+          <div class="optionsPart">
+            <input type="checkbox" id="checkboxPediatric" />
+            <label>Pediatric Specific</label>
+          </div>
+        </div>
+      </div>
+      <div id="filters" style="border: 10px solid #EEE; margin: 30px; width: 550px;">
+      </div>
+    </div>
+    <div>
+      RESULTS
+      <div id="results" style="border: 10px solid #EEE;"></div>
+    </div>
   </div>
-  <div id="results" style="border: 10px solid #EEE;"></div>
 </body>
 
 </html>

@@ -1,49 +1,75 @@
 import { Resource, FilterTree, FilterFunctionCollection } from './typings';
+import { categoryToSubcatIds } from './categories';
 
 export const isEnglish = (d: Resource) => d.fields.Language && d.fields.Language.includes('English');
 
 export const isSpanish = (d: Resource) => d.fields.Language && d.fields.Language.includes('Spanish');
 
-const getIsABEMSubcat = (categoryId: string) => (d: Resource) => (d.fields["ABEM Model Subcategory"] || []).includes(categoryId);
-const getIsResourceType = (rType: string) => (d: Resource) => d.fields["Resource Type"] && d.fields["Resource Type"].includes(rType);
-export const isBlogPost = getIsResourceType('Blog Post');
-export const isSlidePresentation = getIsResourceType('Slide Presentation');
-export const isCaseDiscussion = getIsResourceType('Case Discussion');
+const getIsABEMCat = (categoryName: string) => (d: Resource) => {
+  const ids = categoryToSubcatIds.get(categoryName) || [];
+  return (d.fields["ABEM Model Subcategory"] || []).some((id: string) => ids.includes(id));
+};
 
-export const filterByUserType = (userTypesSelected: string[]) => (data: Resource[]) => {
-  return data.filter(d => {
-    const userType = d.fields["User type"] || 'Neither';
-    return userType === 'Both' || userTypesSelected.includes(userType);
-  })
-}
-
+const getABEMCategoryFilter = (name: string) => ({
+  name,
+  filter: getIsABEMCat(name),
+})
 export const filterTree: FilterTree<Resource> = {
   name: 'all',
   filter: () => true,
   children: [
-    {
-      name: 'Chest Trauma',
-      filter: getIsABEMSubcat('recgPkjZWGRzqGa8Q'),
-    },
-    {
-      name: 'Oropharynx/Throat',
-      filter: getIsABEMSubcat('recKjze3JpZAZITvv'),
-    },
-    {
-      name: 'General',
-      filter: getIsABEMSubcat('recg6dyugvvq9K7V4'),
-    },
-    {
-      name: 'Ear',
-      filter: getIsABEMSubcat("recrf8wLK77Izk0kP"),
-    },
-    {
-      name: 'Resuscitation',
-      filter: getIsABEMSubcat("recHkDcr8jWfRjEwc"),
-    },
+    getABEMCategoryFilter("Signs, Symptoms and Presentations"),
+    getABEMCategoryFilter("Abdominal and Gastrointestinal Disorders"),
+    getABEMCategoryFilter("Cardiovascular Disorders"),
+    getABEMCategoryFilter("Cutaneous Disorders"),
+    getABEMCategoryFilter("Endocrine Metabolic and Nutritional Disorders"),
+    getABEMCategoryFilter("Environmental Disorders"),
+    getABEMCategoryFilter("HEENT Disorders"),
+    getABEMCategoryFilter("Hematologic Disorders"),
+    getABEMCategoryFilter("Immune System Disorders"),
+    getABEMCategoryFilter("Systemic Infectious Disorders"),
+    getABEMCategoryFilter("Musculoskeletal Disorders (Nontraumatic)"),
+    getABEMCategoryFilter("Nervous System Disorders"),
+    getABEMCategoryFilter("Obstetrics and Gynecology"),
+    getABEMCategoryFilter("Psychobehavioral Disorders"),
+    getABEMCategoryFilter("Renal and Urogenital Disorders"),
+    getABEMCategoryFilter("Thoracic Respiratory Disorders"),
+    getABEMCategoryFilter("Toxicologic Disorders"),
+    getABEMCategoryFilter("Traumatic Disorders"),
+    getABEMCategoryFilter("Procedural and Skills"),
+    getABEMCategoryFilter("Other Core Competencies"),
   ]
 }
 
+const getIsResourceType = (rType: string) => (d: Resource) => d.fields["Resource Type"] && d.fields["Resource Type"].includes(rType);
+
+export const filterByContentType = (selections: string[]) => (data: Resource[]) => {
+  if (selections.includes('any')) return data;
+  let filtered = data;
+  selections.forEach((type: string) => {
+    const filter = getIsResourceType(type);
+    filtered = filtered.filter(filter);
+  })
+  return filtered;
+}
+
+export const filterByUserType = (selections: string[]) => (data: Resource[]) => {
+  if (selections.includes('any')) return data;
+  if (selections.includes('Both')) return data;
+  return data.filter(d => {
+    const userType = d.fields["User type"] || 'Neither';
+    return userType === 'Both' || selections.includes(userType);
+  })
+}
+
+export const filterByLanguage = (selections: string[]) => (data: Resource[]) => {
+  if (selections.includes('any')) return data;
+  if (selections.includes('Both')) return data;
+  return data.filter(d => (d.fields["Language"] || []).some(lang => selections.includes(lang)));
+}
+
 export const filterCollection: FilterFunctionCollection<Resource> = {
-  filterByUserType
+  filterByUserType,
+  filterByContentType,
+  filterByLanguage,
 }

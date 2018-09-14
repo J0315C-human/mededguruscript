@@ -1,8 +1,8 @@
 import { Resource, FilterTree } from './typings';
 import { filterByOptionsAndTreePath } from './filters';
-import { filterCollection } from './siteFilters';
+import { filterCollection, filterTree } from './siteFilters';
 import { subcatIdToName } from './categories';
-import glob, { getGlobalResources, getGlobalFilterSelections } from './globals';
+import glob, { getGlobalResources, getGlobalFilterSelections, getGlobalFilterPath } from './globals';
 
 export const displayData = (data: Resource[]) => {
   const results = document.getElementById('results') as HTMLElement;
@@ -45,6 +45,36 @@ const createFilterButtonsInner = (branch: FilterTree<Resource>, fullTree: Filter
   });
 }
 
+const setHandlersForOptions = () => {
+  document.getElementById('optionContentType').onchange = (e: any) => {
+    console.log(e.target.value);
+    glob.selections = {
+      ...glob.selections,
+      filterByContentType: [e.target.value]
+    }
+    const filtered = filterByOptionsAndTreePath(getGlobalResources(), filterTree, getGlobalFilterPath(), filterCollection, getGlobalFilterSelections())
+    displayData(filtered);
+  }
+  document.getElementById('optionUserType').onchange = (e: any) => {
+    console.log(e.target.value);
+    glob.selections = {
+      ...glob.selections,
+      filterByUserType: [e.target.value]
+    }
+    const filtered = filterByOptionsAndTreePath(getGlobalResources(), filterTree, getGlobalFilterPath(), filterCollection, getGlobalFilterSelections())
+    displayData(filtered);
+  }
+  document.getElementById('optionLanguage').onchange = (e: any) => {
+    console.log(e.target.value);
+    glob.selections = {
+      ...glob.selections,
+      filterByLanguage: [e.target.value]
+    }
+    const filtered = filterByOptionsAndTreePath(getGlobalResources(), filterTree, getGlobalFilterPath(), filterCollection, getGlobalFilterSelections())
+    displayData(filtered);
+  }
+}
 export const createFilterButtons = (filterTree: FilterTree<any>) => {
   createFilterButtonsInner(filterTree, filterTree, 0, []);
+  setHandlersForOptions();
 }
