@@ -12,6 +12,9 @@
     .filterPath {
       font-size: 22px;
       line-height: 25px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .filterPath:hover {
@@ -43,6 +46,7 @@
 </head>
 
 <body>
+  <div id="breadcrumb" style="border: 10px solid #EEE; margin: 30px;">></div>
   <div class="columns">
     <div>
       <div id="root" class="options" style="width: 550px;">

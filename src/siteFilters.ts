@@ -1,5 +1,5 @@
 import { Resource, FilterTree, FilterFunctionCollection } from './typings';
-import { categoryToSubcatIds } from './categories';
+import { categoryToSubcatIds, subcatIdToName } from './categories';
 
 export const isEnglish = (d: Resource) => d.fields.Language && d.fields.Language.includes('English');
 
@@ -10,10 +10,26 @@ const getIsABEMCat = (categoryName: string) => (d: Resource) => {
   return (d.fields["ABEM Model Subcategory"] || []).some((id: string) => ids.includes(id));
 };
 
+const getIsABEMSubCat = (subCatId: string) => (d: Resource) => {
+  return (d.fields["ABEM Model Subcategory"] || []).includes(subCatId);
+};
+
+const getABEMSubCatFilters = (parentCategoryName: string) => {
+  const subcats = categoryToSubcatIds.get(parentCategoryName) || [];
+  const x = subcats.map(id => ({
+    name: subcatIdToName.get(id) || '???',
+    filter: getIsABEMSubCat(id),
+  }));
+  console.log(x);
+  return x;
+}
+
 const getABEMCategoryFilter = (name: string) => ({
   name,
   filter: getIsABEMCat(name),
-})
+  children: getABEMSubCatFilters(name),
+});
+
 export const filterTree: FilterTree<Resource> = {
   name: 'all',
   filter: () => true,
@@ -41,6 +57,7 @@ export const filterTree: FilterTree<Resource> = {
   ]
 }
 
+console.log(filterTree);
 const getIsResourceType = (rType: string) => (d: Resource) => d.fields["Resource Type"] && d.fields["Resource Type"].includes(rType);
 
 export const filterByContentType = (selections: string[]) => (data: Resource[]) => {
