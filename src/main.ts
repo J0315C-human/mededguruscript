@@ -1,15 +1,20 @@
 
 import { createFilterButtons, displayData } from './dom';
 import { filterByOptionsAndTreePath } from './filters';
-import { filterTree, filterCollection } from './siteFilters';
+import siteFilters from './siteFilters';
 import { Resource } from 'typings';
 import { fetchAllResources } from './fetch';
-import glob, { getGlobalFilterSelections, getGlobalFilterPath } from './globals';
+import glob from './globals';
 
 export const doTheThing = (data: Resource[]) => {
   glob.resources = data;
-  createFilterButtons(filterTree);
-  const filtered = filterByOptionsAndTreePath(data, filterTree, getGlobalFilterPath(), filterCollection, getGlobalFilterSelections())
+  createFilterButtons(siteFilters.filterTree);
+  const filtered = filterByOptionsAndTreePath(
+    data,
+    siteFilters.filterTree,
+    glob.getFilterPath(),
+    siteFilters.filterOptions,
+    glob.getFilterSelections())
   displayData(filtered);
 }
 

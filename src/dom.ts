@@ -1,6 +1,6 @@
 import { Resource, FilterTree } from './typings';
 import { subcatIdToName } from './categories';
-import glob, { getGlobalFilterPath, update } from './globals';
+import glob from './globals';
 
 export const displayData = (data: Resource[]) => {
   const results = document.getElementById('results') as HTMLElement;
@@ -31,8 +31,7 @@ const createFilterButtonsInner = (branch: FilterTree<Resource>, fullTree: Filter
   const thisPath = path.concat(branch.name);
 
   filter.onclick = () => {
-    glob.filterPath = thisPath;
-    update();
+    glob.setFilterPath(thisPath);
   }
   el.appendChild(filter);
 
@@ -45,27 +44,27 @@ const createFilterButtonsInner = (branch: FilterTree<Resource>, fullTree: Filter
 const setHandlersForOptions = () => {
   document.getElementById('optionContentType').onchange = (e: any) => {
     console.log(e.target.value);
-    glob.selections = {
-      ...glob.selections,
-      filterByContentType: [e.target.value]
-    }
-    update();
+    // glob.selections = {
+    //   ...glob.selections,
+    //   filterByContentType: [e.target.value]
+    // }
+    glob.setFilterSelection({ filterByContentType: [e.target.value] });
   }
   document.getElementById('optionUserType').onchange = (e: any) => {
     console.log(e.target.value);
-    glob.selections = {
-      ...glob.selections,
-      filterByUserType: [e.target.value]
-    }
-    update();
+    // glob.selections = {
+    //   ...glob.selections,
+    //   filterByUserType: [e.target.value]
+    // }
+    glob.setFilterSelection({ filterByUserType: [e.target.value] });
   }
   document.getElementById('optionLanguage').onchange = (e: any) => {
     console.log(e.target.value);
-    glob.selections = {
-      ...glob.selections,
-      filterByLanguage: [e.target.value]
-    }
-    update();
+    // glob.selections = {
+    //   ...glob.selections,
+    //   filterByLanguage: [e.target.value]
+    // }
+    glob.setFilterSelection({ filterByLanguage: [e.target.value] });
   }
 }
 export const createFilterButtons = (filterTree: FilterTree<any>) => {
@@ -73,10 +72,8 @@ export const createFilterButtons = (filterTree: FilterTree<any>) => {
   setHandlersForOptions();
 }
 
-export const setCurrentBreadcrumb = () => {
-  const path = getGlobalFilterPath();
-
+export const setCurrentBreadcrumb = (filterPath: string[]) => {
   const bc = document.getElementById('breadcrumb') as HTMLElement;
 
-  bc.textContent = `Filter Path: ${path.join(' -> ')}`;
+  bc.textContent = `Filter Path: ${filterPath.join(' -> ')}`;
 }

@@ -23,6 +23,29 @@ export const categoryToSubcatIds = new Map([
   ["Other Core Competencies", ["recIwFwXcYX247uGu", "recDt4xL3Rm1SjfyX", "recpCy1coIoeIFD2V", "recOPPxEuCc9Jhdl6"]]
 ]);
 
+export const categoryNames = [
+  "Signs, Symptoms and Presentations",
+  "Abdominal and Gastrointestinal Disorders",
+  "Cardiovascular Disorders",
+  "Cutaneous Disorders",
+  "Endocrine Metabolic and Nutritional Disorders",
+  "Environmental Disorders",
+  "HEENT Disorders",
+  "Hematologic Disorders",
+  "Immune System Disorders",
+  "Systemic Infectious Disorders",
+  "Musculoskeletal Disorders (Nontraumatic)",
+  "Nervous System Disorders",
+  "Obstetrics and Gynecology",
+  "Psychobehavioral Disorders",
+  "Renal and Urogenital Disorders",
+  "Thoracic Respiratory Disorders",
+  "Toxicologic Disorders",
+  "Traumatic Disorders",
+  "Procedural and Skills",
+  "Other Core Competencies",
+]
+
 export const subcatIdToName = new Map([
   ["recKAgx1cxL7kefAf", "Antiemetics"],
   ["recH6iAEcor3wE44X", "Overuse Syndromes"],
