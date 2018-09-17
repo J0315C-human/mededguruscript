@@ -12,7 +12,6 @@ const getABEMSubCatFilters = (parentCategoryName: string) => {
     name: subcatIdToName.get(id) || '???',
     filter: (resource: Resource) => (resource.fields["ABEM Model Subcategory"] || []).includes(id)
   }));
-  console.log(x);
   return x;
 }
 
@@ -49,23 +48,19 @@ const filterByLanguage = (selections: string[]) => (data: Resource[]) => {
   return data.filter(d => (d.fields["Language"] || []).some(lang => selections.includes(lang)));
 }
 
-const filterTree: FilterTree<Resource> = {
-  name: 'all',
-  filter: () => true,
-  children: categoryNames.map((categoryName: string) =>
-    getABEMCategoryFilter(categoryName)
-  )
-}
-
-const filterOptions: FilterFunctionCollection<Resource> = {
-  filterByUserType,
-  filterByContentType,
-  filterByLanguage,
-}
-
 const siteFilters = {
-  filterTree,
-  filterOptions,
+  filterTree: {
+    name: 'all',
+    filter: () => true,
+    children: categoryNames.map((categoryName: string) =>
+      getABEMCategoryFilter(categoryName)
+    )
+  } as (FilterTree<Resource>),
+  filterOptions: {
+    filterByUserType,
+    filterByContentType,
+    filterByLanguage,
+  } as FilterFunctionCollection<Resource>
 }
 
 export default siteFilters;

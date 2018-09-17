@@ -11,6 +11,10 @@ export interface FilterFunctionSelections {
   [key: string]: string[];
 }
 
+export interface ElementWithTreeDepth {
+  depth: number;
+  el: HTMLElement;
+}
 export interface RCResponse {
   offset?: string;
   records: any[];
