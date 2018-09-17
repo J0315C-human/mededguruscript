@@ -1,24 +1,15 @@
 
-import { createFilterButtons, displayData } from './dom';
-import { filterByOptionsAndTreePath } from './filters';
+import dom from './dom';
 import siteFilters from './siteFilters';
 import { Resource } from 'typings';
 import { fetchAllResources } from './fetch';
 import glob from './globals';
 
-export const doTheThing = (data: Resource[]) => {
-  glob.resources = data;
-  createFilterButtons(siteFilters.filterTree);
-  const filtered = filterByOptionsAndTreePath(
-    data,
-    siteFilters.filterTree,
-    glob.getFilterPath(),
-    siteFilters.filterOptions,
-    glob.getFilterSelections())
-  displayData(filtered);
-}
 
-fetchAllResources((records: Resource[]) => {
-  console.log(records.length + ' resources loaded');
-  doTheThing(records);
-})
+fetchAllResources((allResources: Resource[]) => {
+  console.log(allResources.length + ' resources loaded');
+  dom.createInitialControls(siteFilters.filterTree); // method will only perform its duties once
+  glob.resources = allResources;
+  glob.updateResults();
+  glob.updateDisplay();
+});

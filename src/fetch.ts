@@ -19,7 +19,8 @@ const fetchResources = (offset?: string) => {
   return fetch(myRequest, myInit as any);
 }
 
-const fetchSomeResources = (onUpdate: (records: Resource[]) => void, collection: Resource[] = [], offset?: string) => fetchResources(offset).then(res => res.json())
+const fetchSomeResources = (onUpdate: (records: Resource[]) => void, collection: Resource[] = [], offset?: string) => fetchResources(offset)
+  .then(res => res.json())
   .then(function (json) {
     if (json.records) {
       onUpdate(collection.concat(json.records));
@@ -31,6 +32,7 @@ const fetchSomeResources = (onUpdate: (records: Resource[]) => void, collection:
     }
     console.log('resource loading complete')
   });
+
 
 export const fetchAllResources = (onUpdate?: (records: Resource[]) => void) => {
   fetchSomeResources(onUpdate || ((records: Resource[]) => console.log(records)));

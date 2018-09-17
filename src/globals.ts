@@ -1,11 +1,9 @@
 import { FilterFunctionSelections, Resource } from "typings";
 import { filterByOptionsAndTreePath } from "./filters";
 import siteFilters from './siteFilters';
-import { displayData, setCurrentBreadcrumb } from "./dom";
+import dom from "./dom";
 
 class GodObject {
-  // DOM things
-  filtersCreated: boolean;
 
   // User input state
   selections: {
@@ -18,7 +16,6 @@ class GodObject {
   results: Resource[];
 
   constructor() {
-    this.filtersCreated = false;
     this.selections = {
       filterByUserType: ['any'],
       filterByContentType: ['any'],
@@ -28,6 +25,20 @@ class GodObject {
     this.resources = [] as Resource[];
   }
 
+  getResources = () => this.resources;
+  getFilterSelections = () => this.selections;
+  getFilterPath = () => this.filterPath;
+  setFilterPath = (newPath: string[]) => {
+    this.filterPath = newPath;
+    this.update();
+  }
+  setFilterSelection = (selections: FilterFunctionSelections) => {
+    this.selections = {
+      ...this.selections,
+      ...selections
+    };
+    this.update();
+  }
   updateResults = () => {
     this.results = filterByOptionsAndTreePath(
       this.resources,
@@ -37,22 +48,13 @@ class GodObject {
       this.selections
     );
   }
-  getResources = () => this.resources;
-  getFilterSelections = () => this.selections;
-  getFilterPath = () => this.filterPath;
-  setFilterPath = (newPath: string[]) => {
-    this.filterPath = newPath;
-    this.updateResults();
-    displayData(this.results);
+  updateDisplay = () => {
+    dom.displayResources(this.results);
+    dom.displayBreadcrumb(this.getFilterPath());
   }
-  setFilterSelection = (selections: FilterFunctionSelections) => {
-    this.selections = {
-      ...this.selections,
-      ...selections
-    };
+  update = () => {
     this.updateResults();
-    displayData(this.results);
-    setCurrentBreadcrumb(this.filterPath);
+    this.updateDisplay();
   }
 }
 
