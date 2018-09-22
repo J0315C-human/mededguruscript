@@ -14,6 +14,7 @@ export interface FilterFunctionSelections {
 export interface ElementWithTreeDepth {
   depth: number;
   el: HTMLElement;
+  name: string;
 }
 export interface RCResponse {
   offset?: string;

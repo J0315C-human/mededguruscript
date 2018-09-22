@@ -1,4 +1,15 @@
 
+export const nonClinicalCategories = [
+  'Financial Wellness',
+  'Communication and Teamwork',
+  'Health Policy and Social Determinants of Health',
+  'Wellness and Resiliency',
+  'Diversity and Inclusion',
+  'Research',
+  'Career Advancement',
+  'EM Mentality',
+  'Teaching Methods',
+];
 
 export const categoryToSubcatIds = new Map([
   ["Signs, Symptoms and Presentations", ["recK065jpAdzeqtXN", "rect0JVhkFjJ3bnwy", "recr1Fup2jyqdbupB"]],
