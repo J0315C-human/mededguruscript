@@ -20,7 +20,6 @@ module.exports = {
   output: {
     path: outPath,
     filename: 'bundle.js',
-    chunkFilename: '[chunkhash].js',
     publicPath: '/'
   },
   target: 'web',
@@ -86,23 +85,24 @@ module.exports = {
       { test: /\.(jpe?g|gif|bmp|mp3|mp4|ogg|wav|eot|ttf|woff|woff2)$/, use: 'file-loader' }
     ]
   },
-  optimization: {
-    splitChunks: {
-      name: true,
-      cacheGroups: {
-        commons: {
-          chunks: 'initial',
-          minChunks: 2
-        },
-        vendors: {
-          test: /[\\/]node_modules[\\/]/,
-          chunks: 'all',
-          priority: -10
-        }
-      }
-    },
-    runtimeChunk: true
-  },
+  // optimization: {
+  //   splitChunks: {
+  //     name: true,
+  //     cacheGroups: {
+  //       commons: {
+  //         chunks: 'all',
+  //         maxSize: 100,
+  //         minChunks: 5
+  //       },
+  //       vendors: {
+  //         test: /[\\/]node_modules[\\/]/,
+  //         chunks: 'all',
+  //         priority: -10
+  //       }
+  //     }
+  //   },
+  //   runtimeChunk: true
+  // },
   plugins: [
     new webpack.EnvironmentPlugin({
       NODE_ENV: 'development', // use 'development' unless process.env.NODE_ENV is defined
