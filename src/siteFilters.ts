@@ -1,5 +1,5 @@
 import { Resource, FilterTree, FilterFunctionCollection, FilterOptionParams } from './typings';
-import { categoryToSubcatIds, subcatIdToName, categoryNames, nonClinicalCategories } from './categories';
+import { categoryToSubcatIds, subcatIdToName, categoryNames, nonClinicalCategories, contentTypes } from './categories';
 
 const sortUniqueChildFilters = (children: FilterTree<Resource>[]) => {
   const filts = [] as FilterTree<Resource>[];
@@ -56,17 +56,20 @@ const getNonClinicalCategoryFilters = (cats: string[]) => {
 const getResourceTypeFilter = (rType: string) => (d: Resource) => d.fields["Resource Type"] && d.fields["Resource Type"].includes(rType);
 
 const filterByContentType = (selections: string[]) => (data: Resource[]) => {
-  if (selections.includes('any')) return data;
-  let filtered = data;
-  selections.forEach((type: string) => {
-    const filter = getResourceTypeFilter(type);
-    filtered = filtered.filter(filter);
+  if (selections.includes('All')) return data;
+  let filtered = [];
+  const filters = selections.map(type => getResourceTypeFilter(type));
+  data.forEach((resource: Resource) => {
+    const doInclude = filters.some((filter: ((r: Resource) => boolean)) => filter(resource))
+    if (doInclude) {
+      filtered.push(resource);
+    }
   })
   return filtered;
 }
 
 const filterByUserType = (selections: string[]) => (data: Resource[]) => {
-  if (selections.includes('any')) return data;
+  if (selections.includes('All')) return data;
   return data.filter(d => {
     const userType = d.fields["User type"] || 'Neither';
     return userType === 'Both' || selections.includes(userType);
@@ -74,13 +77,22 @@ const filterByUserType = (selections: string[]) => (data: Resource[]) => {
 }
 
 const filterByLanguage = (selections: string[]) => (data: Resource[]) => {
-  if (selections.includes('any')) return data;
+  if (selections.includes('All')) return data;
   if (selections.includes('Both')) return data;
   return data.filter(d => (d.fields["Language"] || []).some(lang => selections.includes(lang)));
 }
 
-export const isClinical = (data: Resource) => !!(data.fields && data.fields["ABEM Model Subcategory"]);
-export const isNonClinical = (data: Resource) => !!(data.fields && data.fields["Non-Clinical Subcategory"]);
+const filterByPediatricSpecific = (selections: string[]) => (data: Resource[]) => {
+  if (selections.length === 0) { /// not checked
+    return data;
+  } else {
+    return data.filter(d => !!(d.fields && d.fields["Pediatric Related"] && d.fields["Pediatric Related"] === true));
+  }
+}
+
+
+// export const isClinical = (data: Resource) => !!(data.fields && data.fields["ABEM Model Subcategory"]);
+// export const isNonClinical = (data: Resource) => !!(data.fields && data.fields["Non-Clinical Subcategory"]);
 
 const clinicalFilters = sortUniqueChildFilters(categoryNames.map((categoryName: string) => getABEMCategoryFilter(categoryName)));
 const nonClinicalFilters = sortUniqueChildFilters(getNonClinicalCategoryFilters(nonClinicalCategories))
@@ -97,23 +109,33 @@ const siteFilters = {
     filterByUserType,
     filterByContentType,
     filterByLanguage,
+    filterByPediatricSpecific,
   } as FilterFunctionCollection<Resource>
   ,
   filterOptionDomParams: [
     {
       name: 'Content Type',
-      options: ['Podcast', 'Textbook', 'Book', "Workshop Thing"],
+      inputType: 'multiSelect',
+      options: contentTypes,
       filterName: 'filterByContentType',
     },
     {
       name: 'Language',
+      inputType: 'multiSelect',
       options: ['English', 'Spanish'],
       filterName: 'filterByLanguage',
     },
     {
       name: 'User Type',
+      inputType: 'multiSelect',
       options: ['Learners', 'Educators'],
       filterName: 'filterByUserType',
+    },
+    {
+      name: 'Pediatric Specific',
+      inputType: 'checkBox',
+      options: [],
+      filterName: 'filterByPediatricSpecific',
     },
   ] as FilterOptionParams[]
 }

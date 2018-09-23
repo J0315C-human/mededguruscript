@@ -9,6 +9,7 @@ export interface FilterOptionParams {
   name: string;
   options: string[];
   filterName: string;
+  inputType: string;
 }
 
 export interface FilterFunctionCollection<T> {

@@ -4,7 +4,6 @@ import siteFilters from './siteFilters';
 import dom from "./dom";
 
 class GodObject {
-
   // User input state
   selections: {
     [filterName: string]: string[];
@@ -17,9 +16,10 @@ class GodObject {
 
   constructor() {
     this.selections = {
-      filterByUserType: ['any'],
-      filterByContentType: ['any'],
-      filterByLanguage: ['any'],
+      filterByUserType: ['All'],
+      filterByContentType: ['All'],
+      filterByLanguage: ['All'],
+      filterByPediatricSpecific: [],
     }
     this.filterPath = [];
     this.resources = [] as Resource[];
@@ -52,8 +52,11 @@ class GodObject {
     dom.displayResources(this.results);
   }
   update = () => {
-    this.updateResults();
-    this.updateDisplay();
+    dom.showLoadingSpinner();
+    setTimeout(() => {
+      this.updateResults();
+      this.updateDisplay();
+    }, 3000000)
   }
 }
 

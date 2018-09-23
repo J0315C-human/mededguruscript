@@ -1,4 +1,25 @@
 
+export const contentTypes = [
+  'Blog Post',
+  'Board Review Questions',
+  'Case Discussion',
+  'Curriculum Module',
+  'eBook',
+  'Image Review',
+  'Inforgraphic',
+  'Journal Club',
+  'PDF',
+  'Podcast',
+  'Procedure Review',
+  'Review Article',
+  'Sim Case',
+  'Slide Presentation',
+  'Textbook Review',
+  'Tips & Pearls',
+  'Video',
+  'Workshop',
+]
+
 export const nonClinicalCategories = [
   'Financial Wellness',
   'Communication and Teamwork',

@@ -1,4 +1,5 @@
 
+import glob from './globals';
 
 const DEFAULT_ALL = 'All';
 
@@ -17,11 +18,13 @@ export default class MultiSelect {
   options: OptionElement[];
   parent: HTMLElement;
   selected: string[];
+  selectionFilterName: string;
 
-  constructor(parent: HTMLElement, label: string, options: string[]) {
+  constructor(parent: HTMLElement, label: string, options: string[], selectionFilterName: string) {
     this.parent = parent;
     this.options = [];
     this.selected = [DEFAULT_ALL];
+    this.selectionFilterName = selectionFilterName;
     // create Dom Elements
     this.createDom(parent, label);
     this.createOptions(options);
@@ -119,6 +122,7 @@ export default class MultiSelect {
       }
     }
     this.displaySelected();
+    glob.setFilterSelection({ [this.selectionFilterName]: this.selected });
   }
 
   displaySelected = () => {

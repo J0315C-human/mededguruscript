@@ -5,7 +5,7 @@ export const customCss = `<style>
   background: #3ea4ce;
   border-radius: 4px;
   padding: 3px 5px;
-  width: 240px;
+  width: 100%;
   margin-bottom: -29px;
   position: relative;
   top: 38px;
@@ -35,7 +35,8 @@ export const customCss = `<style>
 .multiSelectSelect {
   height: 45px;	width: 227px;	border: 1px solid #979797;	background-color: #FFFFFF;
   border-radius: 0px;
-  width: 240px;
+  box-sizing: border-box;
+  width: 100%;
   padding: 10px;
   position: relative;
   overflow: hidden;
@@ -43,8 +44,8 @@ export const customCss = `<style>
 }
 
 .multiSelectText {
-  width: 220px;
-  white-space: nowrap;
+  width: 100%;
+  white-space: nowrap;  
   overflow: hidden;
 }
 
@@ -65,8 +66,9 @@ export const customCss = `<style>
   display: flex;
   flex-flow: column nowrap;
   align-items: flex-start;
-  width: 240px;
+  width: calc(100% + 2px);
   border: 1px solid #979797;
+  box-sizing: border-box;
 }
 
 .multiSelectOptionsOuter:focus, .multiSelectOption:focus {
@@ -93,6 +95,75 @@ export const customCss = `<style>
 }
 .w-icon-dropdown-toggle-custom {
   margin-right: 7px;
+}
+
+.checkboxOuter {
+  position: relative;
+  margin-top: 22px;
+  height: 30px;
+  width: 200px;
+}
+
+.checkboxOuter:hover {
+  cursor: pointer;
+}
+
+.checkboxLabel {
+  position: absolute;
+  top: 0;
+  left: 20px;
+  height: 23px;	color: #0E355B;	font-size: 18px; font-weight: 600;
+  white-space: nowrap;
+  padding-left: 10px;
+  pointer-events: none;
+}
+.checkboxInput {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 17px;
+  height: 17px;
+  border: 1px solid #0E355B;
+  background-color: '#FFF;
+  pointer-events: none;
+}
+.checkboxCheck {
+  position: absolute;
+  right: -2px;
+  top: -4px;
+  font-size: 25px;
+  transform: rotate(134deg);
+  pointer-events: none;
+  color: #Fff;
+}
+
+.loadingOuter {
+  display: flex;
+  height: 400px;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+}
+
+.loadingSpinner {
+  height: 60px;
+  width: 60px;
+  border: 5px solid #0E355B;
+  border-top-color: #FFF;
+  border-radius: 100%;
+  animation: rotation 0.6s infinite linear 0.25s;
+  opacity: 0;
+}
+
+@keyframes rotation {
+  from {
+    opacity: 1;
+    transform: rotate(0deg);
+  }
+  to {
+    opacity: 1;
+    transform: rotate(359deg);
+  }
 }
 
 </style>`;

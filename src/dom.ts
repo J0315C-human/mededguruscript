@@ -4,6 +4,7 @@ import glob from './globals';
 import * as formatDate from 'date-fns/format';
 import { customCss } from './customCss';
 import MultiSelect from './MultiSelect';
+import CheckBox from './CheckBox';
 
 const START_DEPTH = 1;
 export const getFirstElementByClass = (className: string) => {
@@ -11,6 +12,11 @@ export const getFirstElementByClass = (className: string) => {
   if (!elements) return undefined;
   return elements.item(0);
 }
+
+export const loadingDom = `<div class="loadingOuter">
+  <div class="loadingSpinner"></div>
+</div>
+`;
 
 export const headerDom = `<h1 class="resource-page-catalog-category-header" id="categoriesHeading" >Categories</h1>`;
 const t_containers = `
@@ -35,7 +41,8 @@ class="resource-page-catalog-category-link hoverLink">${categoryName}</a>`;
 
 export const t_resourceItem = (resource: Resource) => {
   const date = resource.createdTime && formatDate(resource.createdTime, 'DD/MM/YYYY') || '(date unknown)';
-  const type = resource.fields && resource.fields['Resource Type'] || 'Resource';
+  const type = resource.fields
+    && resource.fields['Resource Type'] && resource.fields['Resource Type'].join(', ') || 'Resource';
   const url = resource.fields && resource.fields['Resource URL'] || '-';
   const source = resource.fields && resource.fields['Source'] || 'Source Unknown';
   const logo = resource.fields && resource.fields['Logo'] && resource.fields['Logo'][0];
@@ -75,15 +82,22 @@ class DomDomDom {
   controlsWereCreated: boolean;
   prereqsWereCreated: boolean;
   filterElements: Map<string, ElementRecord>;
-  multiSelects: Map<string, MultiSelect>;
+  multiSelects: MultiSelect[];
+  checkBoxes: CheckBox[];
   sectionHeadings: Map<string, { el: HTMLElement; visible: boolean }>;
 
   constructor() {
     this.prereqsWereCreated = false;
     this.controlsWereCreated = false;
     this.filterElements = new Map();
-    this.multiSelects = new Map();
+    this.multiSelects = [];
+    this.checkBoxes = [];
     this.sectionHeadings = new Map();
+  }
+
+  showLoadingSpinner = () => {
+    const outer = document.getElementById('putResourcesHere') as HTMLElement;
+    outer.innerHTML = loadingDom;
   }
 
   createPrereqs = () => {
@@ -120,8 +134,14 @@ class DomDomDom {
   createOptions = (optionsParams: FilterOptionParams[]) => {
     const parent = document.getElementById('putOptionsHere') as HTMLElement;
     optionsParams.forEach(optParams => {
-      const ms = new MultiSelect(parent, optParams.name, optParams.options);
-      this.multiSelects.set(optParams.name, ms);
+      if (optParams.inputType === 'checkBox') {
+        const cb = new CheckBox(parent, optParams.name, optParams.filterName);
+        this.checkBoxes.push(cb);
+      } else if (optParams.inputType === 'multiSelect') {
+
+        const ms = new MultiSelect(parent, optParams.name, optParams.options, optParams.filterName);
+        this.multiSelects.push(ms);
+      }
     })
   }
 
@@ -151,7 +171,6 @@ class DomDomDom {
 
     filter.onclick = () => {
       glob.setFilterPath(thisPath);
-      console.log(thisPath);
       this.navigateToBranch(thisPath, fullTree);
     }
     const parentName = path[path.length - 1];
@@ -252,21 +271,6 @@ class DomDomDom {
       return this.getFilterTreeBranch(newPath, child);
     }
     throw new Error('ran out of filter tree children');
-  }
-
-  setHandlersForOptions = () => {
-    document.getElementById('optionContentType').onchange = (e: any) => {
-      console.log(e.target.value);
-      glob.setFilterSelection({ filterByContentType: [e.target.value] });
-    }
-    document.getElementById('optionUserType').onchange = (e: any) => {
-      console.log(e.target.value);
-      glob.setFilterSelection({ filterByUserType: [e.target.value] });
-    }
-    document.getElementById('optionLanguage').onchange = (e: any) => {
-      console.log(e.target.value);
-      glob.setFilterSelection({ filterByLanguage: [e.target.value] });
-    }
   }
 
 }

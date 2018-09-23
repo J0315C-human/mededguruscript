@@ -5,9 +5,16 @@ import { Resource } from 'typings';
 import { fetchAllResources } from './fetch';
 import glob from './globals';
 
+let someHaveLoaded = false;
+
+setTimeout(() => {
+  if (!someHaveLoaded) {
+    dom.showLoadingSpinner();
+  }
+}, 2000);
 
 fetchAllResources((allResources: Resource[]) => {
-  console.log(allResources.length + ' resources loaded');
+  someHaveLoaded = true;
   dom.createInitialControlsAndContainers(siteFilters.filterTree, siteFilters.filterOptionDomParams); // method will only perform its duties once
   glob.resources = allResources;
   glob.updateResults();
