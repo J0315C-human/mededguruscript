@@ -7,8 +7,8 @@ import glob from './globals';
 
 
 fetchAllResources((allResources: Resource[]) => {
-  // console.log(allResources.length + ' resources loaded', allResources);
-  dom.createInitialControlsAndContainers(siteFilters.filterTree); // method will only perform its duties once
+  console.log(allResources.length + ' resources loaded');
+  dom.createInitialControlsAndContainers(siteFilters.filterTree, siteFilters.filterOptionDomParams); // method will only perform its duties once
   glob.resources = allResources;
   glob.updateResults();
   glob.updateDisplay();

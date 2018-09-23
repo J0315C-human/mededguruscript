@@ -50,7 +50,6 @@ class GodObject {
   }
   updateDisplay = () => {
     dom.displayResources(this.results);
-    dom.displayBreadcrumb(this.getFilterPath());
   }
   update = () => {
     this.updateResults();

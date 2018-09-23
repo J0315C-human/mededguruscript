@@ -2,6 +2,13 @@ export interface FilterTree<T> {
   name: string;
   filter: ((item: T) => boolean) | (() => boolean);
   children?: FilterTree<T>[];
+  section: string;
+}
+
+export interface FilterOptionParams {
+  name: string;
+  options: string[];
+  filterName: string;
 }
 
 export interface FilterFunctionCollection<T> {
@@ -11,10 +18,12 @@ export interface FilterFunctionSelections {
   [key: string]: string[];
 }
 
-export interface ElementWithTreeDepth {
+export interface ElementRecord {
   depth: number;
   el: HTMLElement;
   name: string;
+  parentName: string;
+  section: string;
 }
 export interface RCResponse {
   offset?: string;

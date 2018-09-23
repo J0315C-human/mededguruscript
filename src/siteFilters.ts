@@ -1,8 +1,16 @@
-import { Resource, FilterTree, FilterFunctionCollection } from './typings';
+import { Resource, FilterTree, FilterFunctionCollection, FilterOptionParams } from './typings';
 import { categoryToSubcatIds, subcatIdToName, categoryNames, nonClinicalCategories } from './categories';
 
-const sortChildFilters = (children: FilterTree<Resource>[]) => {
-  return [].concat(children).sort((a, b) => {
+const sortUniqueChildFilters = (children: FilterTree<Resource>[]) => {
+  const filts = [] as FilterTree<Resource>[];
+  const addedNames = [] as string[];
+  children.forEach((filt) => {
+    if (!addedNames.includes(filt.name)) {
+      filts.push(filt);
+      addedNames.push(filt.name);
+    }
+  })
+  return filts.sort((a, b) => {
     if (a.name < b.name) {
       return -1;
     }
@@ -22,7 +30,8 @@ const getABEMSubCatFilters = (parentCategoryName: string) => {
   const subcats = categoryToSubcatIds.get(parentCategoryName) || [];
   const x = subcats.map(id => ({
     name: subcatIdToName.get(id) || '???',
-    filter: (resource: Resource) => (resource.fields["ABEM Model Subcategory"] || []).includes(id)
+    section: parentCategoryName,
+    filter: (resource: Resource) => !!(resource.fields && (resource.fields["ABEM Model Subcategory"] || []).includes(id))
   }));
   return x;
 }
@@ -30,7 +39,8 @@ const getABEMSubCatFilters = (parentCategoryName: string) => {
 const getABEMCategoryFilter = (name: string) => ({
   name,
   filter: getABEMCatFilter(name),
-  children: sortChildFilters(
+  section: 'CLINICAL CATEGORIES',
+  children: sortUniqueChildFilters(
     getABEMSubCatFilters(name)
   ),
 });
@@ -38,6 +48,7 @@ const getABEMCategoryFilter = (name: string) => ({
 const getNonClinicalCategoryFilters = (cats: string[]) => {
   return cats.map(cat => ({
     name: cat,
+    section: 'NON-CLINICAL CATEGORES',
     filter: (r: Resource) => !!(r.fields && r.fields["Non-Clinical Subcategory"] && r.fields["Non-Clinical Subcategory"].includes(cat))
   }))
 }
@@ -68,36 +79,43 @@ const filterByLanguage = (selections: string[]) => (data: Resource[]) => {
   return data.filter(d => (d.fields["Language"] || []).some(lang => selections.includes(lang)));
 }
 
-const isClinical = (data: Resource) => !!(data.fields && data.fields["ABEM Model Subcategory"]);
-const isNonClinical = (data: Resource) => !!(data.fields && data.fields["Non-Clinical Subcategory"]);
+export const isClinical = (data: Resource) => !!(data.fields && data.fields["ABEM Model Subcategory"]);
+export const isNonClinical = (data: Resource) => !!(data.fields && data.fields["Non-Clinical Subcategory"]);
+
+const clinicalFilters = sortUniqueChildFilters(categoryNames.map((categoryName: string) => getABEMCategoryFilter(categoryName)));
+const nonClinicalFilters = sortUniqueChildFilters(getNonClinicalCategoryFilters(nonClinicalCategories))
+const allFilters = [...clinicalFilters, ...nonClinicalFilters];
 
 const siteFilters = {
   filterTree: {
-    name: 'Categories',
+    name: 'All Categories',
     filter: () => true,
-    children: [
-      {
-        name: 'Clinical Categories',
-        filter: isClinical,
-        children: sortChildFilters(
-          categoryNames.map((categoryName: string) =>
-            getABEMCategoryFilter(categoryName)
-          ))
-      },
-      {
-        name: 'Non-Clinical Categories',
-        filter: isNonClinical,
-        children: sortChildFilters(
-          getNonClinicalCategoryFilters(nonClinicalCategories)
-        )
-      }
-    ]
+    section: 'All Categories',
+    children: allFilters
   } as (FilterTree<Resource>),
   filterOptions: {
     filterByUserType,
     filterByContentType,
     filterByLanguage,
   } as FilterFunctionCollection<Resource>
+  ,
+  filterOptionDomParams: [
+    {
+      name: 'Content Type',
+      options: ['Podcast', 'Textbook', 'Book', "Workshop Thing"],
+      filterName: 'filterByContentType',
+    },
+    {
+      name: 'Language',
+      options: ['English', 'Spanish'],
+      filterName: 'filterByLanguage',
+    },
+    {
+      name: 'User Type',
+      options: ['Learners', 'Educators'],
+      filterName: 'filterByUserType',
+    },
+  ] as FilterOptionParams[]
 }
 
 export default siteFilters;
