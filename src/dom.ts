@@ -121,14 +121,25 @@ class DomDomDom {
     }
   }
 
+  addShowMoreButton = (parentDiv: HTMLElement) => {
+    const btn = document.createElement('div');
+    btn.textContent = 'SHOW MORE';
+    btn.classList.add('showMoreButton');
+    btn.onclick = () => {
+      glob.onClickShowMore();
+    }
+    parentDiv.appendChild(btn);
+  }
 
   displayResources = (data: Resource[]) => {
-    const results = document.getElementById('putResourcesHere') as HTMLElement;
-    if (!results) return;
-
-    results.innerHTML = data.map(d => {
+    const resultsDiv = document.getElementById('putResourcesHere') as HTMLElement;
+    if (!resultsDiv) return;
+    resultsDiv.innerHTML = data.slice(0, glob.qtyShown).map(d => {
       return t_resourceItem(d);
     }).join('');
+    if (glob.showMoreButtonVisible) {
+      this.addShowMoreButton(resultsDiv);
+    }
   }
 
   createOptions = (optionsParams: FilterOptionParams[]) => {

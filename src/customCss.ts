@@ -166,4 +166,24 @@ export const customCss = `<style>
   }
 }
 
+.showMoreButton {
+  width: 100%;
+  height: 59px;
+  background-color: #DDD;
+  font-size: 25px;
+  font-weight: 700;
+  color: #00355e;
+  text-align: center;
+  line-height: 58px;
+  border-radius: 6px;
+  margin-bottom: 50px;
+}
+.showMoreButton:hover {
+  cursor:pointer;
+  background-color: #EEE;
+}
+.showMoreButton:active {
+  background-color: #CCC;
+}
+
 </style>`;

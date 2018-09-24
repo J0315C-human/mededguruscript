@@ -16,7 +16,5 @@ setTimeout(() => {
 fetchAllResources((allResources: Resource[]) => {
   someHaveLoaded = true;
   dom.createInitialControlsAndContainers(siteFilters.filterTree, siteFilters.filterOptionDomParams); // method will only perform its duties once
-  glob.resources = allResources;
-  glob.updateResults();
-  glob.updateDisplay();
+  glob.setResources(allResources);
 });
