@@ -53,10 +53,8 @@ class GodObject {
   }
   update = () => {
     dom.showLoadingSpinner();
-    setTimeout(() => {
-      this.updateResults();
-      this.updateDisplay();
-    }, 3000000)
+    this.updateResults();
+    this.updateDisplay();
   }
 }
 
